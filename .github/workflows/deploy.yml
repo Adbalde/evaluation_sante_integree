@@ -44,7 +44,7 @@ jobs:
 
       # ── 1. Connexion et déploiement via SSH ───────────────
       - name: Déploiement sur le VPS
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host:        ${{ secrets.VPS_HOST }}
           username:    ${{ secrets.VPS_USER }}
