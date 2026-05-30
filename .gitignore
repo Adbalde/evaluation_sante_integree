@@ -1,0 +1,66 @@
+# =============================================================
+# .gitignore — sante-integree
+# Fichiers et dossiers à NE PAS envoyer sur Git
+# =============================================================
+
+# ── Variables d'environnement (contiennent des secrets) ──────
+.env
+*.env
+!.env.example
+
+# ── Dépendances Python ────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# ── Dépendances Node.js ───────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Build du frontend (généré par vite build) ─────────────────
+frontend/dist/
+
+# ── Logs divers ───────────────────────────────────────────────
+*.log
+logs/
+
+# ── Certificats SSL (ne jamais versionner les clés privées) ───
+nginx/certs/
+*.pem
+*.key
+*.crt
+
+# ── Sauvegardes de base de données ───────────────────────────
+*.sql
+*.dump
+backups/
+
+# ── Fichiers systèmes MacOS / Windows / Linux ─────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Éditeurs de code ─────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Tests et couverture de code ───────────────────────────────
+.coverage
+htmlcov/
+.pytest_cache/
+coverage/
+
+# ── Docker volumes locaux ────────────────────────────────────
+postgres_data/

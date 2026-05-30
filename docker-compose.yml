@@ -1,0 +1,94 @@
+services:
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: sante-postgres
+    restart: always
+    environment:
+      POSTGRES_USER:     ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB:       ${POSTGRES_DB:-sante_integree}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - sante-network
+    healthcheck:
+      test:         ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-sante_integree}"]
+      interval:     10s
+      timeout:      5s
+      retries:      5
+      start_period: 30s
+
+  backend:
+    build:
+      context:    ./backend
+      dockerfile: Dockerfile
+    container_name: sante-backend
+    restart: always
+    environment:
+      DATABASE_URL:                ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/sante_integree}
+      SECRET_KEY:                  ${SECRET_KEY:-changez-moi-en-production-64-chars}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-480}
+      CORS_ORIGINS:                ${CORS_ORIGINS:-http://localhost,http://localhost:80}
+      ADMIN_PASSWORD:              ${ADMIN_PASSWORD:-Admin1234!}
+      AGENT_PASSWORD:              ${AGENT_PASSWORD:-Agent1234!}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sante-network
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context:    ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-/api}
+    container_name: sante-frontend
+    restart: always
+    networks:
+      - sante-network
+    expose:
+      - "80"
+
+  dhis2:
+    image: dhis2/core:2.40
+    container_name: sante-dhis2
+    restart: unless-stopped
+    environment:
+      JAVA_OPTS: "-Xmx2g -Xms1g"
+    volumes:
+      - ./dhis2/dhis.conf:/opt/dhis2/dhis.conf:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sante-network
+    expose:
+      - "8080"
+
+  nginx:
+    image: nginx:alpine
+    container_name: sante-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - sante-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  sante-network:
+    driver: bridge

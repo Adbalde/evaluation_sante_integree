@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SantéIntégrée — Gestion des patients e-santé" />
+    <title>SantéIntégrée</title>
+    <!-- Icône de l'onglet -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>" />
+    <style>
+      /* Style de chargement initial avant que React soit prêt */
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #f8f9fa;
+      }
+      #loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        color: #0F6E56;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Message affiché pendant le chargement de React -->
+    <div id="loading">Chargement de SantéIntégrée…</div>
+
+    <!-- Point de montage de l'application React -->
+    <div id="root"></div>
+
+    <!-- Point d'entrée JavaScript — Vite le compile automatiquement -->
+    <script type="module" src="/src/main.jsx"></script>
+
+    <script>
+      // Cache le message de chargement dès que React est prêt
+      window.addEventListener('load', () => {
+        const loading = document.getElementById('loading')
+        if (loading) loading.style.display = 'none'
+      })
+    </script>
+  </body>
+</html>

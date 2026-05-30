@@ -1,0 +1,24 @@
+# Fichiers à exclure du build Docker Frontend
+
+# Dépendances (trop lourdes, Docker les réinstalle)
+node_modules/
+
+# Build précédent (sera recréé dans Docker)
+dist/
+
+# Variables d'environnement locales (secrets)
+.env
+.env.local
+.env.production
+
+# Logs
+npm-debug.log
+*.log
+
+# Git
+.git
+.gitignore
+
+# Éditeur
+.vscode/
+.idea/

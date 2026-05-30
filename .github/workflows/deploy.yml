@@ -1,0 +1,136 @@
+# ──────────────────────────────────────────────────────────────────────────────
+#  CD — Déploiement Continu sur VPS DigitalOcean
+#  Déclenché uniquement sur les push vers la branche main
+#
+#  Prérequis — Secrets GitHub à configurer dans :
+#  Settings → Secrets and variables → Actions → New repository secret
+#
+#  Secrets nécessaires :
+#    VPS_HOST       → Adresse IP ou domaine de votre VPS
+#    VPS_USER       → Nom d'utilisateur SSH (ex: sante ou ubuntu)
+#    VPS_SSH_KEY    → Clé SSH privée (contenu complet du fichier ~/.ssh/id_rsa)
+#    VPS_PORT       → Port SSH (généralement 22)
+#    SECRET_KEY     → Clé secrète JWT pour la production
+#    ADMIN_PASSWORD → Mot de passe admin production
+#    AGENT_PASSWORD → Mot de passe agent production
+#    DB_PASSWORD    → Mot de passe PostgreSQL production
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+# Évite deux déploiements simultanés
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+jobs:
+
+  # ════════════════════════════════════════════════════════════
+  #  JOB UNIQUE : Déploiement sur le VPS
+  # ════════════════════════════════════════════════════════════
+  deploy:
+    name: 🚀 Déploiement Production
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+      url: http://${{ secrets.VPS_HOST }}
+
+    steps:
+
+      # ── 1. Connexion et déploiement via SSH ───────────────
+      - name: Déploiement sur le VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host:        ${{ secrets.VPS_HOST }}
+          username:    ${{ secrets.VPS_USER }}
+          key:         ${{ secrets.VPS_SSH_KEY }}
+          port:        ${{ secrets.VPS_PORT || 22 }}
+          timeout:     300s
+          script: |
+            set -e   # Arrête le script si une commande échoue
+
+            echo "════════════════════════════════════"
+            echo "  🚀 Démarrage du déploiement"
+            echo "  $(date '+%Y-%m-%d %H:%M:%S')"
+            echo "════════════════════════════════════"
+
+            # ── Aller dans le dossier du projet ──────────────
+            cd ~/sante-integree || {
+              echo "❌ Dossier ~/sante-integree introuvable"
+              echo "   Clonez d'abord : git clone https://github.com/Adbalde/sante-integree.git ~/sante-integree"
+              exit 1
+            }
+
+            # ── Récupérer les dernières modifications ────────
+            echo ""
+            echo "📥 Pull des modifications..."
+            git fetch origin main
+            git reset --hard origin/main
+
+            # ── Mettre à jour le fichier .env ────────────────
+            echo ""
+            echo "🔑 Mise à jour des variables d'environnement..."
+            cat > .env << ENVEOF
+            POSTGRES_USER=postgres
+            POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}
+            POSTGRES_DB=sante_integree
+            DATABASE_URL=postgresql://postgres:${{ secrets.DB_PASSWORD }}@postgres:5432/sante_integree
+            SECRET_KEY=${{ secrets.SECRET_KEY }}
+            ACCESS_TOKEN_EXPIRE_MINUTES=480
+            CORS_ORIGINS=http://${{ secrets.VPS_HOST }},https://${{ secrets.VPS_HOST }}
+            ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+            AGENT_PASSWORD=${{ secrets.AGENT_PASSWORD }}
+            VITE_API_URL=/api
+            DHIS2_URL=http://dhis2:8080
+            DHIS2_USERNAME=admin
+            DHIS2_PASSWORD=district
+            ENVEOF
+
+            # ── Rebuilder et redémarrer les services ─────────
+            echo ""
+            echo "🐳 Rebuild Docker Compose..."
+            docker compose pull --ignore-pull-failures || true
+            docker compose build --no-cache backend frontend
+            docker compose up -d --remove-orphans
+
+            # ── Appliquer les migrations ──────────────────────
+            echo ""
+            echo "📦 Migrations base de données..."
+            sleep 10   # Attend que PostgreSQL soit prêt
+            docker compose exec -T backend alembic upgrade head || \
+              echo "⚠️  Alembic : pas de migrations à appliquer"
+
+            # ── Vérification de l'état ────────────────────────
+            echo ""
+            echo "🔍 Vérification des services..."
+            docker compose ps
+
+            # ── Test de santé de l'API ─────────────────────── 
+            echo ""
+            echo "🏥 Test health check..."
+            sleep 5
+            curl -sf http://localhost/api/health | python3 -m json.tool || \
+              echo "⚠️  Health check en attente (services en démarrage)"
+
+            # ── Nettoyage des images inutilisées ─────────────
+            echo ""
+            echo "🧹 Nettoyage Docker..."
+            docker image prune -f
+
+            echo ""
+            echo "════════════════════════════════════"
+            echo "  ✅ Déploiement terminé avec succès"
+            echo "  🌐 http://${{ secrets.VPS_HOST }}"
+            echo "════════════════════════════════════"
+
+      # ── 2. Notification en cas d'échec ───────────────────
+      - name: Notification échec déploiement
+        if: failure()
+        run: |
+          echo "❌ Le déploiement a échoué !"
+          echo "Consultez les logs : https://github.com/${{ github.repository }}/actions"

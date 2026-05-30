@@ -1,0 +1,22 @@
+# ── Dossiers Python inutiles dans l'image ────────────────────
+__pycache__
+*.py[cod]
+*.pyo
+.Python
+venv/
+env/
+.venv/
+
+# ── Dossier de tests (pas besoin en production) ───────────────
+tests/
+.pytest_cache/
+.coverage
+
+# ── Fichiers de développement ─────────────────────────────────
+.env
+*.env
+.git
+.gitignore
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log

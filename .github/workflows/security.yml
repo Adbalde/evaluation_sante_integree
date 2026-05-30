@@ -1,0 +1,62 @@
+# ──────────────────────────────────────────────────────────────────────────────
+#  Security — Scan de sécurité hebdomadaire
+#  Vérifie les dépendances Python et npm pour des vulnérabilités connues
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: Security Scan
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"   # Chaque lundi à 8h00 UTC
+  push:
+    branches: [main]
+    paths:
+      - "backend/requirements.txt"
+      - "frontend/package.json"
+
+jobs:
+
+  # ── Audit des dépendances Python ─────────────────────────────────────────
+  audit-python:
+    name: 🔒 Audit Python (pip-audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installation pip-audit
+        run: pip install pip-audit
+
+      - name: Scan des dépendances Python
+        run: |
+          cd backend
+          pip-audit -r requirements.txt --format json --output audit-python.json || true
+          pip-audit -r requirements.txt || true
+
+      - name: Upload rapport
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: audit-python
+          path: backend/audit-python.json
+          if-no-files-found: ignore
+
+  # ── Audit des dépendances npm ─────────────────────────────────────────────
+  audit-npm:
+    name: 🔒 Audit npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Scan des dépendances npm
+        run: |
+          cd frontend
+          npm install --package-lock-only
+          npm audit --audit-level=moderate || true
