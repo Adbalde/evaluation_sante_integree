@@ -2,7 +2,7 @@
 # Installe-les avec : pip install -r requirements.txt
 
 #  Framework web 
-fastapi==0.111.0          # Framework API REST moderne et rapide
+fastapi==0.136.3          # Framework API REST moderne et rapide
 uvicorn[standard]==0.29.0 # Serveur ASGI pour FastAPI
 
 #  Base de données 
