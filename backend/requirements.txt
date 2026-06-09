@@ -25,4 +25,4 @@ httpx==0.27.0             # Client HTTP asynchrone (pour appeler DHIS2)
 
 #  Utilitaires 
 python-dotenv==1.0.1      # Lecture du fichier .env
-email-validator==2.1.1    # Validation des adresses email Pydantic
+email-validator==2.3.0    # Validation des adresses email Pydantic
