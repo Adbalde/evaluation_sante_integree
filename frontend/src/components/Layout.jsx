@@ -1,11 +1,9 @@
-// ──────────────────────────────────────────────────────────────────────────────
 //  components/Layout.jsx — Structure principale de l'application
 //  Ce composant affiche :
 //    - La barre de navigation latérale (sidebar) avec les liens
 //    - Le bandeau offline en haut si nécessaire
 //    - Le contenu de la page active (via children)
 //    - Le nom et le bouton de déconnexion en bas de la sidebar
-// ──────────────────────────────────────────────────────────────────────────────
 
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -36,7 +34,7 @@ export default function Layout({ children }) {
       background: '#f8f9fa',
     }}>
 
-      {/* ── Barre de navigation latérale ───────────────────── */}
+      {/*  Barre de navigation latérale */}
       <aside style={{
         width:        210,
         background:   '#fff',
@@ -131,7 +129,7 @@ export default function Layout({ children }) {
         </div>
       </aside>
 
-      {/* ── Zone de contenu principale ─────────────────────── */}
+      {/* Zone de contenu principale  */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {/* Bandeau offline (visible seulement si hors ligne ou synchro en cours) */}
         <OfflineBanner />

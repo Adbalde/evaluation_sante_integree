@@ -1,6 +1,4 @@
-# ────────────────────────────────────────────────────────
 #  Dockerfile Backend — SantéIntégrée (production-ready)
-# ────────────────────────────────────────────────────────
 
 FROM python:3.11-slim
 
@@ -26,6 +24,9 @@ RUN addgroup --system app && adduser --system --group app
 
 # Copie le code source et ajuste les permissions
 COPY ./app ./app
+COPY alembic.ini .
+COPY alembic/ ./alembic/
+
 RUN chown -R app:app /app
 
 # Bascule sur l'utilisateur non-root

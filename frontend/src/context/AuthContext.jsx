@@ -1,4 +1,3 @@
-// ──────────────────────────────────────────────────────────────────────────────
 //  context/AuthContext.jsx — Contexte d'authentification
 //  Ce fichier fournit à toute l'application :
 //    - L'utilisateur connecté (user)
@@ -8,7 +7,6 @@
 //
 //  Utilisation dans un composant :
 //    const { user, login, logout } = useAuth()
-// ──────────────────────────────────────────────────────────────────────────────
 
 import { createContext, useContext, useState, useEffect } from 'react'
 import API from '../services/api'
@@ -17,9 +15,7 @@ import API from '../services/api'
 const AuthContext = createContext(null)
 
 
-// ══════════════════════════════════════════════════════════════
 //  PROVIDER — Enveloppe l'application et partage l'état auth
-// ══════════════════════════════════════════════════════════════
 
 export function AuthProvider({ children }) {
   // Utilisateur connecté (null = pas connecté)
@@ -52,7 +48,7 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
-  // ── Fonction de connexion ─────────────────────────────────
+  //  Fonction de connexion 
   const login = async (nomUtilisateur, motDePasse) => {
     // FastAPI attend un formulaire (FormData), pas du JSON
     const formulaire = new FormData()
@@ -72,7 +68,7 @@ export function AuthProvider({ children }) {
     return reponseProfil.data
   }
 
-  // ── Fonction de déconnexion ───────────────────────────────
+  // Fonction de déconnexion 
   const logout = () => {
     localStorage.removeItem('token')  // Supprime le token
     setUser(null)                      // Vide l'utilisateur en mémoire
@@ -88,9 +84,7 @@ export function AuthProvider({ children }) {
 }
 
 
-// ══════════════════════════════════════════════════════════════
 //  HOOK — Accède facilement au contexte depuis n'importe où
-// ══════════════════════════════════════════════════════════════
 
 /**
  * Hook pour utiliser l'authentification dans un composant.

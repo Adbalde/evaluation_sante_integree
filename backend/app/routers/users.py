@@ -1,17 +1,3 @@
-"""
-routers/users.py — sante-integree  [VERSION CORRIGÉE]
-=============================================================
-Routes pour l'authentification et la gestion des utilisateurs.
-
-CORRECTIONS APPLIQUÉES :
-  - AuditLog(detail=...)          : ok (model corrigé, field s'appelle detail)
-  - models.ActionEnum.login_failed : ok (enum corrigé)
-  - user.last_login               : ok (User model corrigé)
-  - UserCreate → role str → enum  : conversion robuste ajoutée
-  - PUT /users/{id} utilise UserUpdate à la place de UserCreate
-=============================================================
-"""
-
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -27,8 +13,7 @@ from ..auth import (
 
 router = APIRouter()
 
-
-# ── POST /auth/token — Connexion ──────────────────────────────────────────────
+# POST /auth/token — Connexion
 
 @router.post(
     "/auth/token",
@@ -83,7 +68,7 @@ def connexion(
     return {"access_token": token, "token_type": "bearer"}
 
 
-# ── GET /users/me — Profil courant ────────────────────────────────────────────
+# GET /users/me — Profil courant 
 
 @router.get(
     "/users/me",
@@ -95,7 +80,7 @@ def mon_profil(current_user: models.User = Depends(get_current_user)):
     return current_user
 
 
-# ── GET /users — Liste des utilisateurs (admin) ───────────────────────────────
+# GET /users — Liste des utilisateurs (admin) 
 
 @router.get(
     "/users",
@@ -110,7 +95,7 @@ def lister_utilisateurs(
     return db.query(models.User).order_by(models.User.created_at.desc()).all()
 
 
-# ── POST /users — Créer un utilisateur (admin) ────────────────────────────────
+# POST /users — Créer un utilisateur (admin) 
 
 @router.post(
     "/users",
@@ -156,7 +141,7 @@ def creer_utilisateur(
     return user
 
 
-# ── PUT /users/{user_id} — Modifier un utilisateur (admin) ───────────────────
+# PUT /users/{user_id} — Modifier un utilisateur (admin)
 
 @router.put(
     "/users/{user_id}",
@@ -196,7 +181,7 @@ def modifier_utilisateur(
     return user
 
 
-# ── DELETE /users/{user_id} — Supprimer un utilisateur (admin) ───────────────
+#  DELETE /users/{user_id} — Supprimer un utilisateur (admin) 
 
 @router.delete(
     "/users/{user_id}",

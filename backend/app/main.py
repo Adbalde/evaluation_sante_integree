@@ -1,16 +1,3 @@
-"""
-main.py — sante-integree  [VERSION CORRIGÉE]
-=============================================================
-Point d'entrée de l'application FastAPI.
-
-CORRECTIONS APPLIQUÉES :
-  - Seed admin/agent : suppression du champ full_name du User
-    (maintenant full_name est optionnel, pas besoin de le passer)
-  - Gestion d'erreurs plus robuste pour le seed
-  - Ordre d'inclusion des routers correct
-=============================================================
-"""
-
 import logging
 import os
 import time
@@ -24,7 +11,7 @@ from fastapi.responses import JSONResponse
 
 from .auth import hash_password
 from .database import Base, SessionLocal, engine
-from .routers import consultations, patients, stats, users
+from .routers import consultations, patients, stats, users, dhis2
 from . import models  # noqa: F401  (nécessaire pour que les modèles soient découverts)
 
 load_dotenv()
@@ -37,9 +24,7 @@ logging.basicConfig(
 logger = logging.getLogger("sante-integree")
 
 
-# =============================================================
 # SEED — comptes par défaut
-# =============================================================
 
 def initialiser_base() -> None:
     """
@@ -55,7 +40,7 @@ def initialiser_base() -> None:
         if not admin_existe:
             db.add(models.User(
                 username        = "admin",
-                email           = "admin@sante-integree.local",
+                email           = "diouldebalde323@gmail.com",
                 hashed_password = hash_password(
                     os.getenv("ADMIN_PASSWORD", "Admin1234!")
                 ),
@@ -64,7 +49,7 @@ def initialiser_base() -> None:
             ))
             db.add(models.User(
                 username        = "agent",
-                email           = "agent@sante-integree.local",
+                email           = "diouldebalde323+agent@gmail.com",
                 hashed_password = hash_password(
                     os.getenv("AGENT_PASSWORD", "Agent1234!")
                 ),
@@ -82,10 +67,7 @@ def initialiser_base() -> None:
     finally:
         db.close()
 
-
-# =============================================================
 # LIFESPAN
-# =============================================================
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -99,9 +81,7 @@ async def lifespan(app: FastAPI):
     logger.info("🔴 Arrêt SantéIntégrée API")
 
 
-# =============================================================
 # APPLICATION
-# =============================================================
 
 app = FastAPI(
     title       = "SantéIntégrée API",
@@ -115,7 +95,7 @@ app = FastAPI(
     lifespan = lifespan,
 )
 
-# ── CORS ──────────────────────────────────────────────────────
+#  CORS 
 origines = [
     o.strip()
     for o in os.getenv(
@@ -133,7 +113,7 @@ app.add_middleware(
 )
 
 
-# ── Middleware de logging ────────────────────────────────────
+# Middleware de logging
 @app.middleware("http")
 async def logger_requetes(request: Request, call_next):
     debut    = time.time()
@@ -154,7 +134,7 @@ async def logger_requetes(request: Request, call_next):
     return reponse
 
 
-# ── Gestionnaires d'erreurs ───────────────────────────────────
+# Gestionnaires d'erreurs 
 @app.exception_handler(RequestValidationError)
 async def erreur_validation(request: Request, exc: RequestValidationError):
     erreurs = [
@@ -178,14 +158,14 @@ async def erreur_500(request: Request, exc):
     return JSONResponse(status_code=500, content={"detail": "Erreur interne du serveur"})
 
 
-# ── Routeurs ─────────────────────────────────────────────────
+# Routeurs 
 app.include_router(users.router)
 app.include_router(patients.router)
 app.include_router(consultations.router)
 app.include_router(stats.router)
+app.include_router(dhis2.router)
 
-
-# ── Routes utilitaires ───────────────────────────────────────
+#  Routes utilitaires 
 @app.get("/", tags=["🏥 Système"], summary="Health check basique")
 def health_check():
     return {"status": "ok", "app": "SantéIntégrée API", "version": "1.0.0", "docs": "/docs"}

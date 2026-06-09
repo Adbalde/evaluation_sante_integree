@@ -1,7 +1,5 @@
-// ──────────────────────────────────────────────────────────────
 //  main.jsx — Point d'entrée de l'application React
 //  Ce fichier monte l'application dans le DOM (index.html)
-// ──────────────────────────────────────────────────────────────
 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'

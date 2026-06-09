@@ -1,7 +1,5 @@
-// ──────────────────────────────────────────────────────────────
-//  vite.config.js — Configuration du bundler Vite
+//  Configuration du bundler Vite
 //  Vite compile et sert l'application React
-// ──────────────────────────────────────────────────────────────
 
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'

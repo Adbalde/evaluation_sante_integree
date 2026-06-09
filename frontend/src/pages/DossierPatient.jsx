@@ -1,4 +1,3 @@
-// ──────────────────────────────────────────────────────────────────────────────
 //  pages/DossierPatient.jsx — Dossier médical complet d'un patient
 //  Fonctionnalités :
 //    - Fiche identité du patient (colonne gauche)
@@ -6,16 +5,13 @@
 //    - Onglet "Évolution" avec mini-graphiques SVG tension/glycémie
 //    - Modal de modification du patient
 //    - Bouton "Nouvelle consultation" pré-rempli
-// ──────────────────────────────────────────────────────────────────────────────
 
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import API from '../services/api'
 import { enqueue } from '../services/offlineQueue'
 
-// ══════════════════════════════════════════════════════════════
 //  UTILITAIRES
-// ══════════════════════════════════════════════════════════════
 
 /** Formate une date ISO en "12 jan. 2025" */
 const formaterDate = (d) => {
@@ -70,10 +66,8 @@ const styleInput = {
 }
 
 
-// ══════════════════════════════════════════════════════════════
 //  MINI-GRAPHIQUE EN LIGNE SVG
 //  Trace une courbe simple à partir d'une liste de valeurs
-// ══════════════════════════════════════════════════════════════
 
 function MiniCourbe({ valeurs, couleur = '#0F6E56', unite = '' }) {
   // Besoin d'au moins 2 points pour tracer une courbe
@@ -134,9 +128,7 @@ function MiniCourbe({ valeurs, couleur = '#0F6E56', unite = '' }) {
 }
 
 
-// ══════════════════════════════════════════════════════════════
 //  MODAL DE MODIFICATION DU PATIENT
-// ══════════════════════════════════════════════════════════════
 
 function ModalModificationPatient({ patient, onFermer, onSauvegarde }) {
   // Initialise le formulaire avec les données existantes
@@ -279,10 +271,8 @@ function ModalModificationPatient({ patient, onFermer, onSauvegarde }) {
 }
 
 
-// ══════════════════════════════════════════════════════════════
 //  CARTE D'UNE CONSULTATION (dans la timeline)
 //  Cliquable pour afficher/masquer les détails
-// ══════════════════════════════════════════════════════════════
 
 function CarteConsultation({ consultation, onNouvelleConsultation }) {
   const [ouvert, setOuvert] = useState(false)  // Dépliée ou repliée
@@ -431,9 +421,7 @@ function CarteConsultation({ consultation, onNouvelleConsultation }) {
 }
 
 
-// ══════════════════════════════════════════════════════════════
 //  PAGE PRINCIPALE — DOSSIER PATIENT
-// ══════════════════════════════════════════════════════════════
 
 export default function DossierPatient() {
   const { id }   = useParams()    // Récupère l'ID du patient depuis l'URL
@@ -473,7 +461,7 @@ export default function DossierPatient() {
     chargerDonnees()
   }
 
-  // ── Données calculées ───────────────────────────────────────
+  //  Données calculées
   const nomComplet   = patient ? `${patient.prenom} ${patient.nom}` : ''
   const age          = patient ? calculerAge(patient.date_naissance) : null
   const badgeProps   = propsBadge(patient?.maladie || '')
@@ -492,7 +480,7 @@ export default function DossierPatient() {
     .reverse()
     .map(c => parseFloat(c.glycemie))
 
-  // ── Écrans de chargement et d'erreur ───────────────────────
+  // Écrans de chargement et d'erreur 
   if (chargement) return (
     <div style={{ textAlign: 'center', padding: 60, color: '#888', fontSize: 15 }}>
       ⏳ Chargement du dossier…
@@ -513,10 +501,10 @@ export default function DossierPatient() {
     </div>
   )
 
-  // ── Rendu principal ─────────────────────────────────────────
+  // Rendu principal 
   return (
     <div>
-      {/* ── Fil d'Ariane ─────────────────────────────────── */}
+      {/*  Fil d'Ariane */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20, fontSize: 13, color: '#888' }}>
         <span style={{ cursor: 'pointer', color: '#0F6E56' }} onClick={() => navigate('/patients')}>
           Patients
@@ -525,12 +513,10 @@ export default function DossierPatient() {
         <span style={{ color: '#111', fontWeight: 500 }}>{nomComplet}</span>
       </div>
 
-      {/* ── Mise en page en 2 colonnes ────────────────────── */}
+      {/* Mise en page en 2 colonnes  */}
       <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 20, alignItems: 'start' }}>
 
-        {/* ════════════════════════════════════════════════
-            COLONNE GAUCHE — Fiche identité du patient
-        ════════════════════════════════════════════════ */}
+        {/* COLONNE GAUCHE — Fiche identité du patient */}
         <div>
           {/* Carte identité principale */}
           <div style={{
@@ -664,9 +650,7 @@ export default function DossierPatient() {
         </div>
 
 
-        {/* ════════════════════════════════════════════════
-            COLONNE DROITE — Consultations et évolution
-        ════════════════════════════════════════════════ */}
+        {/* COLONNE DROITE — Consultations et évolution */}
         <div>
           {/* Onglets */}
           <div style={{ display: 'flex', gap: 4, marginBottom: 16 }}>
@@ -690,7 +674,7 @@ export default function DossierPatient() {
             ))}
           </div>
 
-          {/* ── ONGLET HISTORIQUE : Timeline des consultations ── */}
+          {/* ONGLET HISTORIQUE : Timeline des consultations  */}
           {onglet === 'historique' && (
             <div>
               {consultations.length === 0 ? (

@@ -64,3 +64,10 @@ coverage/
 
 # ── Docker volumes locaux ────────────────────────────────────
 postgres_data/
+.env
+nginx/certs/
+.env
+nginx/certs/
+nginx/certs/*.pem
+nginx/certs/*.key
+nginx/certs/*.crt

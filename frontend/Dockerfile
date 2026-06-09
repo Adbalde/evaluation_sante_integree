@@ -1,11 +1,8 @@
-# ──────────────────────────────────────────────────────────────────────────────
-#  Dockerfile Frontend — SantéIntégrée
 #  Build multi-étapes :
 #    Étape 1 : Compile React avec Node.js → dossier dist/
 #    Étape 2 : Sert les fichiers statiques avec Nginx (image légère)
-# ──────────────────────────────────────────────────────────────────────────────
 
-# ══ ÉTAPE 1 : BUILD ═══════════════════════════════════════════
+#  ÉTAPE 1 : BUILD 
 # Image Node.js légère (alpine)
 FROM node:20-alpine AS build
 
@@ -32,7 +29,7 @@ ENV VITE_API_URL=$VITE_API_URL
 # Génère des fichiers optimisés dans le dossier dist/
 RUN npm run build
 
-# ══ ÉTAPE 2 : SERVEUR WEB ════════════════════════════════════
+# ÉTAPE 2 : SERVEUR WEB
 # Image Nginx ultra-légère (seulement pour servir des fichiers)
 FROM nginx:alpine
 

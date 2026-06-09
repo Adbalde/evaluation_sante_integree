@@ -1,10 +1,8 @@
-# ──────────────────────────────────────────────────────────────────────────────
 #  auth.py — Authentification JWT et sécurité
 #  Ce fichier gère :
 #    - Le hachage des mots de passe avec bcrypt
 #    - La création et vérification des tokens JWT
 #    - Les dépendances FastAPI pour protéger les routes
-# ──────────────────────────────────────────────────────────────────────────────
 
 from datetime import datetime, timedelta
 from typing import Optional
@@ -21,7 +19,7 @@ import os
 # Charge les variables d'environnement
 load_dotenv()
 
-# ── Configuration JWT ─────────────────────────────────────────────────────────
+#Configuration JWT
 # Clé secrète pour signer les tokens (DOIT être longue et aléatoire en prod)
 SECRET_KEY = os.getenv("SECRET_KEY", "changez-moi-en-production-avec-une-cle-longue")
 
@@ -31,19 +29,17 @@ ALGORITHM = "HS256"
 # Durée de vie du token en minutes (480 = 8 heures)
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 480))
 
-# ── Contexte de hachage ───────────────────────────────────────────────────────
+#Contexte de hachage
 # bcrypt est l'algorithme recommandé pour les mots de passe
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# ── Schéma OAuth2 ─────────────────────────────────────────────────────────────
+#Schéma OAuth2
 # Indique à FastAPI où chercher le token dans les requêtes
 # Le token doit être dans le header : Authorization: Bearer <token>
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
-# ══════════════════════════════════════════════════════════════
 #  FONCTIONS DE MOT DE PASSE
-# ══════════════════════════════════════════════════════════════
 
 def hasher_mot_de_passe(mot_de_passe: str) -> str:
     """
@@ -69,9 +65,7 @@ def verifier_mot_de_passe(mot_de_passe_clair: str, hash_stocke: str) -> bool:
 verify_password = verifier_mot_de_passe
 
 
-# ══════════════════════════════════════════════════════════════
 #  FONCTIONS JWT
-# ══════════════════════════════════════════════════════════════
 
 def creer_token_acces(donnees: dict, expiration: Optional[timedelta] = None) -> str:
     """
@@ -100,9 +94,7 @@ def creer_token_acces(donnees: dict, expiration: Optional[timedelta] = None) -> 
 create_access_token = creer_token_acces
 
 
-# ══════════════════════════════════════════════════════════════
 #  DÉPENDANCES FASTAPI — Protègent les routes
-# ══════════════════════════════════════════════════════════════
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),

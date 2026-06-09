@@ -1,8 +1,6 @@
-# ──────────────────────────────────────────────────────────────────────────────
-#  routers/stats.py — Statistiques pour le tableau de bord
+#   Statistiques pour le tableau de bord
 #  Route : GET /stats
 #  Retourne tous les chiffres clés du système en une seule requête
-# ──────────────────────────────────────────────────────────────────────────────
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -33,7 +31,7 @@ def obtenir_statistiques(
     mois_actuel    = maintenant.month
     annee_actuelle = maintenant.year
 
-    # ── Totaux généraux ───────────────────────────────────────
+    # Totaux généraux 
     # Nombre total de patients actifs (non archivés)
     total_patients = db.query(models.Patient).filter(
         models.Patient.is_archived == False
@@ -42,7 +40,7 @@ def obtenir_statistiques(
     # Nombre total de consultations (toutes)
     total_consultations = db.query(models.Consultation).count()
 
-    # ── Ce mois-ci ────────────────────────────────────────────
+    # Ce mois-ci 
     # Nouveaux patients créés ce mois
     nouveaux_ce_mois = db.query(models.Patient).filter(
         models.Patient.is_archived == False,
@@ -56,7 +54,7 @@ def obtenir_statistiques(
         extract("year",  models.Consultation.date_visite) == annee_actuelle,
     ).count()
 
-    # ── Répartition par pathologie ────────────────────────────
+    # Répartition par pathologie 
     # Patients diabétiques (le nom de maladie contient "Diabète")
     nb_diabete = db.query(models.Patient).filter(
         models.Patient.maladie.ilike("%diabète%"),
@@ -79,7 +77,7 @@ def obtenir_statistiques(
     # Autres pathologies (soustraction pour éviter les doublons)
     nb_autre = max(0, total_patients - nb_diabete - nb_hypertension + nb_les_deux)
 
-    # ── Évolution mensuelle ───────────────────────────────────
+    # Évolution mensuelle 
     # Construit un dictionnaire {0: nb_jan, 1: nb_fev, ..., 11: nb_dec}
     # pour les graphiques du dashboard
     consultations_par_mois = {i: 0 for i in range(12)}

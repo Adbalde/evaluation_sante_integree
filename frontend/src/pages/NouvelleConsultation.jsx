@@ -1,4 +1,3 @@
-// ──────────────────────────────────────────────────────────────────────────────
 //  pages/NouvelleConsultation.jsx — Formulaire de création de consultation
 //  Fonctionnalités :
 //    - Recherche patient avec autocomplétion
@@ -6,7 +5,6 @@
 //    - Indicateurs cliniques (tension / glycémie)
 //    - Formulaire en 3 étapes : saisie → confirmation → succès
 //    - Support offline (mise en queue si hors ligne)
-// ──────────────────────────────────────────────────────────────────────────────
 
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -15,7 +13,7 @@ import { enqueue } from '../services/offlineQueue'
 
 const styleInput = { padding: '8px 10px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', width: '100%' }
 
-// ── Indicateur de niveau clinique ─────────────────────────────────────────────
+// Indicateur de niveau clinique
 function Indicateur({ valeur, seuils, unite }) {
   if (!valeur) return null
   const v = parseFloat(valeur)
@@ -30,7 +28,7 @@ function Indicateur({ valeur, seuils, unite }) {
   )
 }
 
-// ── Étapes de progression ─────────────────────────────────────────────────────
+// Étapes de progressio
 function Etapes({ etapeActuelle }) {
   const etapes = ['Formulaire', 'Confirmation', 'Succès']
   return (
@@ -47,7 +45,7 @@ function Etapes({ etapeActuelle }) {
   )
 }
 
-// ── Résumé avant confirmation ─────────────────────────────────────────────────
+// Résumé avant confirmation
 function ResumeConfirmation({ form, patient, onConfirmer, onRetour, enregistrement }) {
   const lignes = [
     { label: 'Patient',            valeur: patient ? `${patient.prenom} ${patient.nom}` : form.patient_nom },
@@ -83,7 +81,7 @@ function ResumeConfirmation({ form, patient, onConfirmer, onRetour, enregistreme
   )
 }
 
-// ── Page principale ───────────────────────────────────────────────────────────
+// Page principale
 export default function NouvelleConsultation() {
   const navigate     = useNavigate()
   const [searchParams] = useSearchParams()
@@ -170,7 +168,7 @@ export default function NouvelleConsultation() {
     }
   }
 
-  // ── Vue succès ──────────────────────────────────────────────────────────────
+  // Vue succès
   if (etape === 3) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
       <div style={{ textAlign: 'center', maxWidth: 400 }}>
@@ -190,7 +188,7 @@ export default function NouvelleConsultation() {
     </div>
   )
 
-  // ── Vue confirmation ────────────────────────────────────────────────────────
+  // Vue confirmation 
   if (etape === 2) return (
     <div>
       <div style={{ marginBottom: 20 }}>
@@ -201,7 +199,7 @@ export default function NouvelleConsultation() {
     </div>
   )
 
-  // ── Vue formulaire (étape 1) ────────────────────────────────────────────────
+  // Vue formulaire (étape 1)
   return (
     <div>
       <div style={{ marginBottom: 20 }}>

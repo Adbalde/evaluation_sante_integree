@@ -1,10 +1,8 @@
-// ──────────────────────────────────────────────────────────────────────────────
 //  App.jsx — Configuration du routeur et des routes de l'application
 //  Ce fichier définit :
 //    - Les URLs de l'application et les pages correspondantes
 //    - La protection des routes (redirige vers /login si pas connecté)
 //    - L'initialisation du système offline au démarrage
-// ──────────────────────────────────────────────────────────────────────────────
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect } from 'react'
@@ -21,9 +19,7 @@ import NouvelleConsultation from './pages/NouvelleConsultation'
 import DossierPatient       from './pages/DossierPatient'
 
 
-// ══════════════════════════════════════════════════════════════
 //  ROUTE PROTÉGÉE — Redirige vers /login si pas connecté
-// ══════════════════════════════════════════════════════════════
 
 function RoutePrivee({ children }) {
   const { user, loading } = useAuth()
@@ -54,9 +50,7 @@ function RoutePrivee({ children }) {
 }
 
 
-// ══════════════════════════════════════════════════════════════
 //  ROUTES — Définit toutes les URL de l'application
-// ══════════════════════════════════════════════════════════════
 
 function AppRoutes() {
   // Initialise le système offline une seule fois au démarrage
@@ -95,9 +89,7 @@ function AppRoutes() {
 }
 
 
-// ══════════════════════════════════════════════════════════════
 //  COMPOSANT RACINE — Enveloppe tout avec les providers
-// ══════════════════════════════════════════════════════════════
 
 export default function App() {
   return (

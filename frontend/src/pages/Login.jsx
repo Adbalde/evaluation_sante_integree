@@ -1,7 +1,5 @@
-// ──────────────────────────────────────────────────────────────────────────────
 //  pages/Login.jsx — Page de connexion
 //  Formulaire de connexion avec gestion des erreurs
-// ──────────────────────────────────────────────────────────────────────────────
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'

@@ -1,20 +1,3 @@
-"""
-schemas.py — sante-integree  [VERSION CORRIGÉE]
-=============================================================
-Schémas Pydantic pour la validation des données.
-
-CORRECTIONS APPLIQUÉES :
-  - PatientBase  : sexe et maladie Optional, ajout tension/glycemie
-  - PatientPage  : pages → total_pages (match routers)
-  - ConsultationBase : date_consultation→date_visite,
-                       tension_systolique+diastolique → tension String
-  - ConsultationOut  : agent_nom → agent (match ce que le router injecte)
-  - ConsultationPage : pages → total_pages (match routers)
-  - UserOut      : full_name ajouté
-  - SyncPayload  : aligné avec offlineQueue.js côté frontend
-=============================================================
-"""
-
 from datetime import datetime, date
 from typing import Optional, List, Dict
 from pydantic import BaseModel, EmailStr, field_validator
@@ -22,9 +5,7 @@ from pydantic import BaseModel, EmailStr, field_validator
 from .models import RoleEnum
 
 
-# =============================================================
 # AUTHENTIFICATION
-# =============================================================
 
 class Token(BaseModel):
     """Réponse retournée après une connexion réussie"""
@@ -37,9 +18,7 @@ class TokenData(BaseModel):
     username: Optional[str] = None
 
 
-# =============================================================
 # UTILISATEURS
-# =============================================================
 
 class UserBase(BaseModel):
     username:  str
@@ -78,9 +57,7 @@ class UserOut(UserBase):
     model_config = {"from_attributes": True}
 
 
-# =============================================================
 # PATIENTS
-# =============================================================
 
 class PatientBase(BaseModel):
     """Champs communs patient"""
@@ -88,7 +65,7 @@ class PatientBase(BaseModel):
     prenom:         str
     date_naissance: Optional[date]  = None
 
-    # CORRECTION : Optional (le frontend peut ne pas envoyer ces champs)
+    # Optional (le frontend peut ne pas envoyer ces champs)
     sexe:           Optional[str]   = None
     telephone:      Optional[str]   = None
     localite:       Optional[str]   = None
@@ -96,7 +73,7 @@ class PatientBase(BaseModel):
     maladie:        Optional[str]   = None
     antecedents:    Optional[str]   = None
 
-    # CORRECTION : ajout tension et glycemie (envoyés par le form patient)
+    #  ajout tension et glycemie (envoyés par le form patient)
     tension:        Optional[str]   = None
     glycemie:       Optional[float] = None
 
@@ -144,22 +121,20 @@ class PatientPage(BaseModel):
     total:       int
     page:        int
     per_page:    int
-    # CORRECTION : pages → total_pages (les routers retournent "total_pages")
+    # pages → total_pages (les routers retournent "total_pages")
     total_pages: int
 
 
-# =============================================================
 # CONSULTATIONS
-# =============================================================
 
 class ConsultationBase(BaseModel):
     """Champs communs consultation"""
     patient_id:  int
 
-    # CORRECTION : date_consultation → date_visite (match frontend + routers)
+    # date_consultation → date_visite (match frontend + routers)
     date_visite: date
 
-    # CORRECTION : tension unifiée en String "120/80" (match frontend + models)
+    # tension unifiée en String "120/80" (match frontend + models)
     tension:     Optional[str]   = None
     glycemie:    Optional[float] = None
     poids:       Optional[float] = None
@@ -193,7 +168,7 @@ class ConsultationOut(ConsultationBase):
     # Champs enrichis depuis les relations (injectés par le router)
     patient_nom: Optional[str] = None    # Nom complet du patient
     maladie:     Optional[str] = None    # Pathologie du patient
-    # CORRECTION : agent_nom → agent (le router injecte la clé "agent")
+    #  agent_nom → agent (le router injecte la clé "agent")
     agent:       Optional[str] = None    # Nom d'utilisateur de l'agent
 
     model_config = {"from_attributes": True}
@@ -203,13 +178,11 @@ class ConsultationPage(BaseModel):
     """Réponse paginée pour la liste des consultations"""
     items:       List[ConsultationOut]
     total:       int
-    # CORRECTION : pages → total_pages (les routers retournent "total_pages")
+    #  pages → total_pages (les routers retournent "total_pages")
     total_pages: int
 
 
-# =============================================================
 # STATISTIQUES (tableau de bord)
-# =============================================================
 
 class StatsOut(BaseModel):
     """Données du tableau de bord principal"""
@@ -224,9 +197,7 @@ class StatsOut(BaseModel):
     consultations_par_mois: Dict[int, int]
 
 
-# =============================================================
 # SYNCHRONISATION OFFLINE
-# =============================================================
 
 class SyncItem(BaseModel):
     """Une action offline en attente d'envoi au serveur"""

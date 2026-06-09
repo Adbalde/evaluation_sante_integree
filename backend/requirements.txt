@@ -1,32 +1,28 @@
-# =============================================================
-# requirements.txt — sante-integree (backend)
-# =============================================================
 # Toutes les dépendances Python du projet.
 # Installe-les avec : pip install -r requirements.txt
-# =============================================================
 
-# ── Framework web ─────────────────────────────────────────────
+#  Framework web 
 fastapi==0.111.0          # Framework API REST moderne et rapide
 uvicorn[standard]==0.29.0 # Serveur ASGI pour FastAPI
 
-# ── Base de données ───────────────────────────────────────────
+#  Base de données 
 sqlalchemy==2.0.30        # ORM pour interagir avec PostgreSQL
 psycopg2-binary==2.9.9    # Driver Python ↔ PostgreSQL
 alembic==1.13.1           # Gestion des migrations de schéma
 
-# ── Validation des données ────────────────────────────────────
+#  Validation des données 
 pydantic==2.7.1           # Validation et sérialisation des modèles
 pydantic-settings==2.2.1  # Chargement des variables d'environnement
 
-# ── Authentification & sécurité ───────────────────────────────
+#  Authentification & sécurité 
 python-jose[cryptography]==3.3.0  # Création et vérification des JWT
 passlib[bcrypt]==1.7.4
 bcrypt==3.2.2            # Hash des mots de passe (bcrypt)
 python-multipart==0.0.9           # Lecture des formulaires (login)
 
-# ── Requêtes HTTP (appels vers DHIS2) ─────────────────────────
+#  Requêtes HTTP (appels vers DHIS2) 
 httpx==0.27.0             # Client HTTP asynchrone (pour appeler DHIS2)
 
-# ── Utilitaires ───────────────────────────────────────────────
+#  Utilitaires 
 python-dotenv==1.0.1      # Lecture du fichier .env
 email-validator==2.1.1    # Validation des adresses email Pydantic

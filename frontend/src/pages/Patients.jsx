@@ -1,4 +1,3 @@
-// ──────────────────────────────────────────────────────────────────────────────
 //  pages/Patients.jsx — Liste et gestion des patients
 //  Fonctionnalités :
 //    - Liste paginée (10 par page)
@@ -6,17 +5,17 @@
 //    - Filtre par pathologie
 //    - Modal création/modification de patient
 //    - Support offline (actions mises en queue si hors ligne)
-// ──────────────────────────────────────────────────────────────────────────────
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import API from '../services/api'
 import { enqueue } from '../services/offlineQueue'
 
-// ── Constantes ─────────────────────────────────────────────────────────────────
+
+// Constantes
 const MALADIES = ['Tous', 'Diabète', 'Hypertension', 'Diabète + Hypertension', 'Autre']
 
-// ── Utilitaires visuels ────────────────────────────────────────────────────────
+//  Utilitaires visuels 
 const initiales = (nom = '') => nom.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
 
 const couleurAvatar = (nom = '') => {
@@ -37,7 +36,7 @@ const propsBadge = (maladie = '') => {
 
 const styleInput = { padding: '8px 10px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, width: '100%' }
 
-// ── Modal de création / modification patient ───────────────────────────────────
+// Modal de création / modification patient 
 function ModalPatient({ patient, onFermer, onSauvegarde }) {
   const enModification = !!patient?.id
   const [form, setForm] = useState(patient || {
@@ -127,7 +126,7 @@ function ModalPatient({ patient, onFermer, onSauvegarde }) {
   )
 }
 
-// ── Page principale Patients ───────────────────────────────────────────────────
+// Page principale Patients 
 export default function Patients() {
   const navigate = useNavigate()
   const [patients,      setPatients]      = useState([])

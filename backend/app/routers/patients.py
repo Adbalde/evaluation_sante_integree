@@ -1,14 +1,3 @@
-"""
-routers/patients.py — sante-integree  [VERSION CORRIGÉE]
-=============================================================
-CORRECTIONS APPLIQUÉES :
-  - models.ActionEnum.archive_patient : ok (enum corrigé)
-  - AuditLog(detail=..., entity_type=..., entity_id=...) : ok (model corrigé)
-  - PatientPage.total_pages : ok (schema corrigé)
-  - ilike sur maladie (maintenant String, fonctionne)
-=============================================================
-"""
-
 import math
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -22,8 +11,7 @@ from ..auth import get_current_user
 router = APIRouter(prefix="/patients", tags=["👥 Patients"])
 
 
-# ── GET /patients ─────────────────────────────────────────────────────────────
-
+# GET /patients
 @router.get(
     "",
     response_model=schemas.PatientPage,
@@ -73,7 +61,7 @@ def lister_patients(
     }
 
 
-# ── GET /patients/{patient_id} ────────────────────────────────────────────────
+#GET /patients/{patient_id}
 
 @router.get(
     "/{patient_id}",
@@ -93,7 +81,7 @@ def obtenir_patient(
     return patient
 
 
-# ── POST /patients ────────────────────────────────────────────────────────────
+# POST /patients
 
 @router.post(
     "",
@@ -136,7 +124,7 @@ def creer_patient(
     return patient
 
 
-# ── PUT /patients/{patient_id} ────────────────────────────────────────────────
+# PUT /patients/{patient_id}
 
 @router.put(
     "/{patient_id}",
@@ -172,8 +160,7 @@ def modifier_patient(
     return patient
 
 
-# ── DELETE /patients/{patient_id} ─────────────────────────────────────────────
-
+#  DELETE /patients/{patient_id}
 @router.delete(
     "/{patient_id}",
     summary="Archiver un patient (suppression logique)",

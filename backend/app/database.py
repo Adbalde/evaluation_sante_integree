@@ -1,6 +1,5 @@
 """
-database.py — sante-integree
-=============================================================
+
 Ce fichier gère la connexion à la base de données PostgreSQL.
 
 Rôle de chaque composant :
@@ -9,7 +8,6 @@ Rôle de chaque composant :
                    reçoit sa propre session indépendante)
   - Base         : classe parente de tous les modèles SQLAlchemy
   - get_db()     : dépendance FastAPI qui ouvre/ferme la session
-=============================================================
 """
 
 import os
@@ -17,14 +15,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# ── Lecture de l'URL de connexion depuis les variables d'env ──
+#  Lecture de l'URL de connexion depuis les variables d'env ──
 # Format : postgresql://utilisateur:motdepasse@hote:port/base
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql://postgres:postgres@localhost:5432/sante_integree"
 )
 
-# ── Création du moteur SQLAlchemy ─────────────────────────────
+#  Création du moteur SQLAlchemy 
+
 # pool_pre_ping=True : vérifie que la connexion est toujours vivante
 # avant chaque requête (évite les erreurs "connexion perdue")
 engine = create_engine(
@@ -36,7 +35,7 @@ engine = create_engine(
     max_overflow=20,
 )
 
-# ── Fabrique de sessions ──────────────────────────────────────
+#  Fabrique de sessions 
 # autocommit=False : on contrôle manuellement quand valider
 # autoflush=False  : on contrôle manuellement les flush
 SessionLocal = sessionmaker(
@@ -45,7 +44,7 @@ SessionLocal = sessionmaker(
     bind=engine
 )
 
-# ── Classe de base pour tous les modèles ─────────────────────
+#  Classe de base pour tous les modèles 
 # Tous les modèles (Patient, Consultation...) héritent de Base
 Base = declarative_base()
 

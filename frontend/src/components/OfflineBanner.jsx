@@ -1,10 +1,8 @@
-// ──────────────────────────────────────────────────────────────────────────────
 //  components/OfflineBanner.jsx — Bandeau d'état offline/synchro
 //  Affiché automatiquement quand :
 //    - L'utilisateur perd la connexion Internet
 //    - Des actions sont en attente de synchronisation
 //  Disparaît automatiquement quand tout est synchronisé
-// ──────────────────────────────────────────────────────────────────────────────
 
 import { useEffect, useState } from 'react'
 import { subscribeToQueue, synchroniser } from '../services/offlineQueue'

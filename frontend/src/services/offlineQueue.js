@@ -10,6 +10,23 @@
 
 import { openDB } from 'idb'
 
+// ── Générateur UUID compatible HTTP et HTTPS ───────────────────────────────
+// crypto.randomUUID() ne fonctionne qu'en HTTPS
+// Cette fonction fonctionne dans tous les contextes (HTTP inclus)
+export function generateUUID() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID()
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0
+    const v = c === 'x' ? r : (r & 0x3) | 0x8
+    return v.toString(16)
+  })
+}
+
+
+
+
 // ── Configuration ──────────────────────────────────────────────────────────
 const NOM_BASE    = 'sante-integree-offline'  // Nom de la base IndexedDB
 const VERSION_DB  = 1                          // Version (à incrémenter si on change la structure)
