@@ -15,7 +15,7 @@ pydantic==2.7.1           # Validation et sérialisation des modèles
 pydantic-settings==2.2.1  # Chargement des variables d'environnement
 
 #  Authentification & sécurité 
-python-jose[cryptography]==3.3.0  # Création et vérification des JWT
+python-jose[cryptography]==3.5.0  # Création et vérification des JWT
 passlib[bcrypt]==1.7.4
 bcrypt==3.2.2            # Hash des mots de passe (bcrypt)
 python-multipart==0.0.9           # Lecture des formulaires (login)
