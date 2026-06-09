@@ -7,7 +7,7 @@ uvicorn[standard]==0.29.0 # Serveur ASGI pour FastAPI
 
 #  Base de données 
 sqlalchemy==2.0.30        # ORM pour interagir avec PostgreSQL
-psycopg2-binary==2.9.9    # Driver Python ↔ PostgreSQL
+psycopg2-binary==2.9.12    # Driver Python ↔ PostgreSQL
 alembic==1.13.1           # Gestion des migrations de schéma
 
 #  Validation des données 
